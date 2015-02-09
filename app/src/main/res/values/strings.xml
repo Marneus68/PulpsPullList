@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Pulp\'s Pull List</string>
+
     <string name="preferences">Preferences</string>
+
+    <!-- Actions -->
+    <string name="discard">Discard</string>
+    <string name="see_more">See more</string>
 </resources>
