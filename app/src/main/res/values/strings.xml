@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Pulp\'s Pull List</string>
 
+    <string name="pulps_rss_folder">Pulps</string>
+    <string name="pulps_rss_local_file">pulps.rss</string>
+    <string name="pulps_rss_url">http://pulpscomics.blogspot.com/feeds/posts/default?alt=rss</string>
+
     <string name="preferences">Preferences</string>
 
     <!-- Actions -->
