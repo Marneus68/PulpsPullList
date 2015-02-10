@@ -146,9 +146,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void updateListViewContent() {
         Feed feed = RSSParser.getFeed(localFile);
+        /*
         if (loadedVersion != feed.lastEdited) {
 
             loadedVersion = feed.lastEdited;
         }
+        */
     }
 }
