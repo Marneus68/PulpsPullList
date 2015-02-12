@@ -1,4 +1,4 @@
-<resources>
+    <resources>
     <string name="app_name">Pulp\'s Pull List</string>
 
     <string name="pulps_rss_folder">Pulps</string>
@@ -10,4 +10,7 @@
     <!-- Actions -->
     <string name="discard">Discard</string>
     <string name="see_more">See more</string>
+
+    <string name="blog_title">Pulp\'s Comics Blog</string>
+    <string name="watchlist_title">Watchlist</string>
 </resources>
