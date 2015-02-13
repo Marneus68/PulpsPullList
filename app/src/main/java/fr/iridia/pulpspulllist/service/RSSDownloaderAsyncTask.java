@@ -18,15 +18,12 @@ public class RSSDownloaderAsyncTask extends AsyncTask<Void, Integer, Integer> {
     protected String    localFile;
     protected Context   context;
 
+    protected int       fileLength;
+
     public RSSDownloaderAsyncTask(Context context, URL url, String localFile) {
         this.url = url;
         this.localFile = localFile;
         this.context = context;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
     }
 
     @Override
@@ -42,7 +39,7 @@ public class RSSDownloaderAsyncTask extends AsyncTask<Void, Integer, Integer> {
                 return -1;
             }
 
-            int fileLength = connection.getContentLength();
+            fileLength = connection.getContentLength();
 
             input = connection.getInputStream();
             output = new FileOutputStream(localFile);
@@ -57,6 +54,7 @@ public class RSSDownloaderAsyncTask extends AsyncTask<Void, Integer, Integer> {
                     return null;
                 }
                 total += count;
+                publishProgress((int)total);
                 if (fileLength > 0)
                     publishProgress((int) (total * 100 / fileLength));
                 output.write(data, 0, count);
@@ -83,10 +81,5 @@ public class RSSDownloaderAsyncTask extends AsyncTask<Void, Integer, Integer> {
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
         Log.i(TAG, values[0].toString());
-    }
-
-    @Override
-    protected void onPostExecute(Integer integer) {
-        super.onPostExecute(integer);
     }
 }

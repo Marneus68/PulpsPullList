@@ -9,4 +9,8 @@
         android:id="@+id/main_activity_menu_preferences"
         android:title="@string/preferences"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/main_activity_menu_about"
+        android:title="@string/about"
+        app:showAsAction="never"/>
 </menu>

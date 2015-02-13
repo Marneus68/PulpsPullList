@@ -1,5 +1,8 @@
 package fr.iridia.pulpspulllist;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +20,8 @@ import java.io.File;
 import java.net.URL;
 
 import fr.iridia.pulpspulllist.data.Feed;
+import fr.iridia.pulpspulllist.fragments.BlogFragment;
+import fr.iridia.pulpspulllist.fragments.WatchListFragment;
 import fr.iridia.pulpspulllist.service.RSSDownloaderAsyncTask;
 import fr.iridia.pulpspulllist.utils.RSSParser;
 
@@ -30,13 +35,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     protected ActionBar actionBar;
+    protected FragmentManager fragmentManager;
 
-    protected SwipeRefreshLayout swipeRefreshLayout = null;
-    protected ListView listView = null;
+    protected ProgressDialog progressDialog;
 
     protected URL url = null;
     protected String localFile = null;
-    protected String loadedVersion = "";
 
     protected Location location = Location.ON_BLOG;
 
@@ -44,7 +48,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        //setContentView(R.layout.blog_fragment);
+
+        fragmentManager = getFragmentManager();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.mainFrame, new BlogFragment());
+        fragmentTransaction.commit();
 
         try {
             url = new URL(getString(R.string.pulps_rss_url));
@@ -56,72 +65,37 @@ public class MainActivity extends ActionBarActivity {
 
         actionBar = getSupportActionBar();
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        listView = (ListView) findViewById(R.id.mainListView);
-
         if (null!=actionBar) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setIcon(R.drawable.ic_launcher);
             actionBar.setTitle(R.string.blog_title);
         }
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Log.i(TAG, "Refresh");
-
-                ( new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        new RSSDownloaderAsyncTask(getApplicationContext(), url, localFile) {
-                            @Override
-                            protected void onPostExecute(Integer integer) {
-                                super.onPostExecute(integer);
-                                swipeRefreshLayout.setRefreshing(false);
-                                updateListViewContent();
-                            }
-                        }.execute();
-                    }
-                }, 3000);
-            }
-        });
-
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
-                    swipeRefreshLayout.setEnabled(true);
-                else
-                    swipeRefreshLayout.setEnabled(false);
-            }
-        });
-
         if (!localRSSFileExists()) {
-            swipeRefreshLayout.setRefreshing(true);
             Log.i(TAG, "No local copy of the RSS feed. Copying.");
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(getString(R.string.fetching));
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
             new RSSDownloaderAsyncTask(getApplicationContext(), url, localFile) {
                 @Override
+                protected void onPreExecute() {
+                    progressDialog.show();
+                    super.onPreExecute();
+                }
+                @Override
                 protected void onPostExecute(Integer integer) {
+                    progressDialog.hide();
                     super.onPostExecute(integer);
-                    swipeRefreshLayout.setRefreshing(false);
                 }
             }.execute();
-        } else {
-            updateListViewContent();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (location == Location.ON_BLOG)
-            getMenuInflater().inflate(R.menu.main_activity_menu, menu);
-        else if (location == Location.ON_WATCHLIST)
-            getMenuInflater().inflate(R.menu.main_activity_watchlist, menu);
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -132,40 +106,57 @@ public class MainActivity extends ActionBarActivity {
                 openPreferenceActivity();
                 return true;
             case R.id.main_activity_menu_watchlist:
-                navigateToWatchList();
+                toggleWatchList();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void navigateToWatchList() {
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.watchlist_title);
-        actionBar.setIcon(null);
-        location = Location.ON_WATCHLIST;
-        invalidateOptionsMenu();
-    }
-
-    public void navigateToBlogView() {
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setTitle(R.string.blog_title);
-        actionBar.setIcon(R.drawable.ic_launcher);
-        location = Location.ON_BLOG;
-        invalidateOptionsMenu();
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (location != Location.ON_BLOG) {
+            navigateToBlogView();
+        }
+        return super.onSupportNavigateUp();
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        switch (location) {
-            case ON_BLOG:
-                return true;
-            case ON_WATCHLIST:
-                navigateToBlogView();
-                return true;
-            default:
-                return super.onSupportNavigateUp();
+    public void onBackPressed() {
+        if (location != Location.ON_BLOG) {
+            navigateToBlogView();
         }
+        else super.onBackPressed();
+    }
+
+    public void toggleWatchList() {
+        if (location == Location.ON_BLOG) {
+            if (null!=actionBar) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(R.string.watchlist_title);
+                actionBar.setIcon(null);
+            }
+            location = Location.ON_WATCHLIST;
+
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.slide_up, R.animator.slide_down, R.animator.slide_up, R.animator.slide_down)
+                    .addToBackStack("foo")
+                    .replace(R.id.mainFrame, new WatchListFragment())
+                    .commit();
+        } else {
+            navigateToBlogView();
+        }
+    }
+
+    public void navigateToBlogView() {
+        if (null!=actionBar) {
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setTitle(R.string.blog_title);
+            actionBar.setIcon(R.drawable.ic_launcher);
+        }
+        location = Location.ON_BLOG;
+
+        getFragmentManager().popBackStack();
     }
 
     public void openPreferenceActivity() {
@@ -187,15 +178,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return out;
-    }
-
-    public void updateListViewContent() {
-        Feed feed = RSSParser.getFeed(localFile);
-        /*
-        if (loadedVersion != feed.lastEdited) {
-
-            loadedVersion = feed.lastEdited;
-        }
-        */
     }
 }

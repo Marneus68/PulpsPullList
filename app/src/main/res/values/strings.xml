@@ -6,6 +6,7 @@
     <string name="pulps_rss_url">http://pulpscomics.blogspot.com/feeds/posts/default?alt=rss</string>
 
     <string name="preferences">Preferences</string>
+    <string name="about">About</string>
 
     <!-- Actions -->
     <string name="discard">Discard</string>
@@ -13,4 +14,9 @@
 
     <string name="blog_title">Pulp\'s Comics Blog</string>
     <string name="watchlist_title">Watchlist</string>
+
+    <string name="english_title">English</string>
+    <string name="french_title">French</string>
+
+    <string name="fetching">Fetching RSS feed.</string>
 </resources>
