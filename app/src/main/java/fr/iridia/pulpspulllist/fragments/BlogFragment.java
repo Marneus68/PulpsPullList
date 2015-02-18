@@ -3,21 +3,16 @@ package fr.iridia.pulpspulllist.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ListView;
 
 import java.net.URL;
 
 import fr.iridia.pulpspulllist.R;
 import fr.iridia.pulpspulllist.data.Feed;
-import fr.iridia.pulpspulllist.service.RSSDownloaderAsyncTask;
 import fr.iridia.pulpspulllist.utils.RSSParser;
 
 public class BlogFragment extends Fragment {

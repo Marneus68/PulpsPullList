@@ -15,8 +15,11 @@
     <string name="blog_title">Pulp\'s Comics Blog</string>
     <string name="watchlist_title">Watchlist</string>
 
-    <string name="english_title">English</string>
-    <string name="french_title">French</string>
+
+    <string-array name="watchlists_headers">
+        <item>English</item>
+        <item>French</item>
+    </string-array>
 
     <string name="fetching">Fetching RSS feed.</string>
 </resources>

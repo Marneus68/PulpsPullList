@@ -6,24 +6,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import java.io.File;
 import java.net.URL;
 
-import fr.iridia.pulpspulllist.data.Feed;
 import fr.iridia.pulpspulllist.fragments.BlogFragment;
-import fr.iridia.pulpspulllist.fragments.WatchListFragment;
+import fr.iridia.pulpspulllist.fragments.WatchListsFragment;
 import fr.iridia.pulpspulllist.service.RSSDownloaderAsyncTask;
-import fr.iridia.pulpspulllist.utils.RSSParser;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -140,8 +134,9 @@ public class MainActivity extends ActionBarActivity {
 
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.animator.slide_up, R.animator.slide_down, R.animator.slide_up, R.animator.slide_down)
-                    .addToBackStack("foo")
-                    .replace(R.id.mainFrame, new WatchListFragment())
+                    //.setCustomAnimations(R.animator.slide_up, R.animator.slide_down)
+                    .replace(R.id.mainFrame, new WatchListsFragment())
+                    .addToBackStack(null)
                     .commit();
         } else {
             navigateToBlogView();
@@ -156,11 +151,11 @@ public class MainActivity extends ActionBarActivity {
         }
         location = Location.ON_BLOG;
 
-        getFragmentManager().popBackStack();
+        fragmentManager.popBackStack();
     }
 
     public void openPreferenceActivity() {
-        Intent i = new Intent(this, PreferencesActivity.class);
+        Intent i = new Intent(this, PulpsPreferencesActivity.class);
         startActivity(i);
     }
 
