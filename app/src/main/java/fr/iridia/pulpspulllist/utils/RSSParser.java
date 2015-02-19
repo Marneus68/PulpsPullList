@@ -15,29 +15,25 @@ public class RSSParser {
     public static final String TAG = "RSSParser";
 
     public static Feed getFeed(String path) {
-        Feed pulps_feed = new Feed();
+        Feed pfeed = new Feed();
 
         try {
             URL url = new URL("file://" + path);
             RssFeed feed = RssReader.read(url);
 
-            pulps_feed.name = feed.getTitle();
-            pulps_feed.link = feed.getLink();
+            pfeed.name = feed.getTitle();
+            pfeed.link = feed.getLink();
             //pulps_feed.lastEdited = feed.
 
             ArrayList<RssItem> rssItems = feed.getRssItems();
 
-            for (RssItem rssItem : rssItems) {
-                Log.i("RSS Reader", rssItem.getTitle());
-                //if (rssItem.get)
+            for (RssItem rssItem : rssItems)
+                pfeed.addItem(rssItem.getTitle(), rssItem.getDescription());
 
-                //pulps_feed.addItem(rssItem.getTitle(), rssItem.getContent());
-
-            }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
 
-        return pulps_feed;
+        return pfeed;
     }
 }

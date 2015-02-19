@@ -1,5 +1,5 @@
     <resources>
-    <string name="app_name">Pulp\'s Pull List</string>
+    <string name="app_name">Pulp\'s Comics</string>
 
     <string name="pulps_rss_folder">Pulps</string>
     <string name="pulps_rss_local_file">pulps.rss</string>
@@ -15,6 +15,9 @@
     <string name="blog_title">Pulp\'s Comics Blog</string>
     <string name="watchlist_title">Watchlist</string>
 
+    <string name="add_watchlist_title">Add item to watchlist.</string>
+    <string name="add_watchlist_desc">Enter the name of a series you want added to the watchlist. You\'ll be notified when it\'s available."</string>
+    <string name="add_watchlist_add">Add</string>
 
     <string-array name="watchlists_headers">
         <item>English</item>

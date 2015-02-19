@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
 
+import fr.iridia.pulpspulllist.MainActivity;
 import fr.iridia.pulpspulllist.R;
 
 public class WatchListsViewPagerAdapter extends FragmentPagerAdapter {
@@ -20,9 +21,13 @@ public class WatchListsViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new ListFragment();
+                ListFragment lfEn = new ListFragment();
+                lfEn.setKey(MainActivity.EnglishWatchlistKey);
+                return lfEn;
             case 1:
-                return new ListFragment();
+                ListFragment lfFr = new ListFragment();
+                lfFr.setKey(MainActivity.FrenchWatchlistKey);
+                return lfFr;
         }
         return null;
     }

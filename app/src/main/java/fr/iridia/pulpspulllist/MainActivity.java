@@ -1,9 +1,13 @@
 package fr.iridia.pulpspulllist;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
@@ -11,6 +15,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.io.File;
 import java.net.URL;
@@ -22,6 +27,13 @@ import fr.iridia.pulpspulllist.service.RSSDownloaderAsyncTask;
 public class MainActivity extends ActionBarActivity {
 
     public static final String TAG = "MainActivity";
+
+    public static final String preferenceString = "PulpsPrefString";
+    public static final String FrenchWatchlistKey = "FR";
+    public static final String EnglishWatchlistKey = "EN";
+
+    public static SharedPreferences sharedPreferences;
+    public static Context context;
 
     protected enum Location {
         ON_BLOG,
@@ -44,6 +56,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.main_activity);
 
         fragmentManager = getFragmentManager();
+        context = getApplicationContext();
+
+        sharedPreferences = getApplication().getSharedPreferences(preferenceString, MODE_PRIVATE);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.mainFrame, new BlogFragment());
@@ -134,7 +149,6 @@ public class MainActivity extends ActionBarActivity {
 
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.animator.slide_up, R.animator.slide_down, R.animator.slide_up, R.animator.slide_down)
-                    //.setCustomAnimations(R.animator.slide_up, R.animator.slide_down)
                     .replace(R.id.mainFrame, new WatchListsFragment())
                     .addToBackStack(null)
                     .commit();
@@ -159,6 +173,9 @@ public class MainActivity extends ActionBarActivity {
         startActivity(i);
     }
 
+    public void openAboutPopup() {
+    }
+
     public boolean localRSSFileExists() {
         File file = new File(localFile);
         boolean out = file.exists();
@@ -171,7 +188,6 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
-
         return out;
     }
 }
